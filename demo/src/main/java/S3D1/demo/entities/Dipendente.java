@@ -20,7 +20,7 @@ public class Dipendente {
     public Dipendente(){
     }
 
-    public Dipendente(int id, String username, String nome, String cognome, String email) {
+    public Dipendente(String username, String nome, String cognome, String email) {
         this.id = id;
         this.username = username;
         this.nome = nome;

@@ -1,13 +1,13 @@
 package S3D1.demo.services;
 
 import S3D1.demo.entities.Dipendente;
+import S3D1.demo.exceptions.BadRequestEx;
 import S3D1.demo.exceptions.NotFoundEx;
 import S3D1.demo.payloads.NewDipendenteDTO;
 import S3D1.demo.repositories.DipendenteRepository;
 import S3D1.demo.repositories.GestionePrenotazioniRepository;
 import S3D1.demo.repositories.ViaggioRepository;
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
+
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,26 +36,20 @@ public class DipendenteService {
         return dipendenteRepository.findAll();
     }
 
-    public Dipendente save(NewDipendenteDTO body) throws IOException {
-        dipendenteRepository.findByEmail(body.email()).ifPresent(user -> {
-            try {
-                throw new BadRequestException("L'email " + body.email() + " è già stata utilizzata");
-            } catch (BadRequestException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        Dipendente newDipendente = new Dipendente();
-        newDipendente.setUsername(body.username());
-        newDipendente.setNome(body.nome());
-        newDipendente.setCognome(body.cognome());
-        newDipendente.setEmail(body.email());
+    public Dipendente save(NewDipendenteDTO body) {
 
-        Dipendente dipendenteSalvato = dipendenteRepository.save(newDipendente);
-        System.out.println("Dipendente salvato con successo: " + dipendenteSalvato);
+        this.dipendenteRepository.findByEmail(body.email()).ifPresent(
+                dipendente -> {
+                    throw new BadRequestEx("L'email " + body.email() + " è già in uso!");
+                }
+        );
 
-        return dipendenteSalvato;
 
+        Dipendente newDipendente = new Dipendente( body.username(), body.nome(), body.cognome(), body.email());
+
+        return this.dipendenteRepository.save(newDipendente);
     }
+
 
     public Dipendente findById(int id) {
         return dipendenteRepository.findById(id).orElseThrow(() -> new NotFoundEx(id));
@@ -76,6 +70,9 @@ public class DipendenteService {
         return dipendenteRepository.save(found);
     }
 
+    public Dipendente findByEmail(String email) {
+        return dipendenteRepository.findByEmail(email).orElseThrow(() -> new NotFoundEx("Il dipendente con l'email " + email + " non è stato trovato!"));
+    }
 
 
 }

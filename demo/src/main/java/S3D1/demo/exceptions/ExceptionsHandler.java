@@ -1,5 +1,6 @@
 package S3D1.demo.exceptions;
 
+import S3D1.demo.payloads.ErrorsResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -21,6 +22,12 @@ public class ExceptionsHandler {
     public ErrorsPayload handleGeneric(Exception e) {
         e.printStackTrace();
         return new ErrorsPayload("Errore generico, risolveremo il prima possibile", LocalDateTime.now());
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED) // 401
+    public ErrorsResponseDTO handleUnauthorized(UnauthorizedException ex) {
+        return new ErrorsResponseDTO(ex.getMessage(), LocalDateTime.now());
     }
 
 }

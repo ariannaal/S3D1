@@ -23,5 +23,6 @@ public record NewDipendenteDTO(
         @Size(min = 3, max = 25, message = "L'email del dipendente deve essere compresa tra 3 e 25 caratteri")
         String email
 
+
 ) {
 }
