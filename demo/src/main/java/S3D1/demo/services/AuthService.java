@@ -22,7 +22,7 @@ public class AuthService {
         // 1.1 Cerco nel db tramite email se esiste il dipendente
         Dipendente found = this.dipendenteService.findByEmail(body.email());
         if (found.getUsername().equals(body.username())) {
-            // 1.2 Se lo trovo verifico se l'user trovata combacia con quella passataci tramite body
+            // 1.2 Se lo trovo verifico se l'il dipendente trovato combacia con quella passatao tramite body
             // 2. Se è tutto ok --> genero un access token e lo restituisco
             return jwtTools.createToken(found);
         } else {
