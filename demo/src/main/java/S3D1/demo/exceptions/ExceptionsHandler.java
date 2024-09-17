@@ -2,6 +2,7 @@ package S3D1.demo.exceptions;
 
 import S3D1.demo.payloads.ErrorsResponseDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -27,6 +28,13 @@ public class ExceptionsHandler {
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED) // 401
     public ErrorsResponseDTO handleUnauthorized(UnauthorizedException ex) {
+        return new ErrorsResponseDTO(ex.getMessage(), LocalDateTime.now());
+    }
+
+    // creo nuova gestione dell' errore per negata autorizzazione
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorsResponseDTO handleForbidden(AuthorizationDeniedException ex){
         return new ErrorsResponseDTO(ex.getMessage(), LocalDateTime.now());
     }
 

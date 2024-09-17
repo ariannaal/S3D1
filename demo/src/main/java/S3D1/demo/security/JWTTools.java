@@ -37,4 +37,10 @@ public class JWTTools {
 
     }
 
+    //metodo che dato un token torni l’id
+    public String getIdFromToken(String accessToken){
+        return Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parseSignedClaims(accessToken).getPayload().getSubject(); //subject è l'id dell'utente
+    }
+
+
 }

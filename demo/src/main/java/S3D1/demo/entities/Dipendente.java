@@ -1,10 +1,18 @@
 package S3D1.demo.entities;
 
+import S3D1.demo.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "dipendenti")
-public class Dipendente {
+@JsonIgnoreProperties ({"username", "enabled", "accountNonLocked", "accountNonExpired", "credentialsNonExpired"})
+public class Dipendente implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +23,8 @@ public class Dipendente {
     private String cognome;
     private String email;
     private String immagineProfilo;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
 
     public Dipendente(){
@@ -26,12 +36,23 @@ public class Dipendente {
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
+        this.role=Role.IMPIEGATO;
     }
 
     public int getId() {
         return id;
     }
 
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() { // deve restituire una lista di ruoli dell’utente che si chiama SimpleGrantedAuthority
+        return List.of();
+    }
+
+    @Override
+    public String getPassword() {
+        return "";
+    }
 
     public String getUsername() {
         return username;

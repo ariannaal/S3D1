@@ -11,6 +11,7 @@ import S3D1.demo.repositories.ViaggioRepository;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +31,9 @@ public class DipendenteService {
     @Autowired
     private GestionePrenotazioniRepository gestionePrenotazioniRepository;
 
+    @Autowired
+    private PasswordEncoder bcrypt;
+
 
     public List<Dipendente> listaDipendenti() {
 
@@ -45,7 +49,7 @@ public class DipendenteService {
         );
 
 
-        Dipendente newDipendente = new Dipendente( body.username(), body.nome(), body.cognome(), body.email());
+        Dipendente newDipendente = new Dipendente( bcrypt.encode(body.username()), body.nome(), body.cognome(), body.email());
 
         return this.dipendenteRepository.save(newDipendente);
     }

@@ -6,6 +6,7 @@ import S3D1.demo.payloads.DipendenteLoginDTO;
 import S3D1.demo.payloads.NewDipendenteDTO;
 import S3D1.demo.security.JWTTools;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,16 +18,18 @@ public class AuthService {
     @Autowired
     private JWTTools jwtTools;
 
+    @Autowired
+    private PasswordEncoder bcrypt;
+
     public String checkCredentialsAndGenerateToken(DipendenteLoginDTO body) {
-        // 1. Controllo le credenziali
-        // 1.1 Cerco nel db tramite email se esiste il dipendente
+
         Dipendente found = this.dipendenteService.findByEmail(body.email());
-        if (found.getUsername().equals(body.username())) {
-            // 1.2 Se lo trovo verifico se l'il dipendente trovato combacia con quella passatao tramite body
-            // 2. Se è tutto ok --> genero un access token e lo restituisco
+        System.out.println( bcrypt.encode(found.getUsername()));
+        if (bcrypt.matches(body.username(), found.getUsername())) {
+
             return jwtTools.createToken(found);
         } else {
-            // 3. Se le credenziali sono errate --> 401 (Unauthorized)
+
             throw new UnauthorizedException("Credenziali errate!");
         }
     }
